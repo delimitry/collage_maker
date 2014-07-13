@@ -11,7 +11,7 @@ from optparse import OptionParser
 
 def make_collage(images, filename, width, init_height):
 	"""
-	Make a collage images from `images` and save to `filename`.
+	Make a collage image with a width equal to `width` from `images` and save to `filename`.
 	"""
 	if not images:
 		print 'No images for collage found!'
