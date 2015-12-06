@@ -82,7 +82,7 @@ def make_collage(images, filename, width, init_height):
 def main():
 	# prepare options parser
 	options = OptionParser(usage='%prog [options]', description='Photo collage maker')
-	options.add_option('-f', '--folder', dest='folder', help='folder with images (*.jpg, *.jpeg)', default='.')
+	options.add_option('-f', '--folder', dest='folder', help='folder with images (*.jpg, *.jpeg, *.png)', default='.')
 	options.add_option('-o', '--output', dest='output', help='output collage image filename', default='collage.png')
 	options.add_option('-w', '--width', dest='width', type='int', help='resulting collage image width')
 	options.add_option('-i', '--init_height', dest='init_height', type='int', help='initial height for resize the images')
@@ -94,7 +94,7 @@ def main():
 		return
 
 	# get images
-	images = filter(lambda x: os.path.splitext(x)[1].lower() in ['.jpg', '.jpeg'], os.listdir(opts.folder))
+	images = filter(lambda x: os.path.splitext(x)[1].lower() in ['.jpg', '.jpeg', '.png'], os.listdir(opts.folder))
 	if not images:
 		print 'No images for making collage! Please select other directory with images!'
 		return
