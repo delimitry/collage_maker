@@ -14,7 +14,7 @@ Photo collage maker
 Options:
   -h, --help            show this help message and exit
   -f FOLDER, --folder=FOLDER
-                        folder with images (*.jpg, *.jpeg)
+                        folder with images (*.jpg, *.jpeg, *.png)
   -o OUTPUT, --output=OUTPUT
                         output collage image filename
   -w WIDTH, --width=WIDTH
