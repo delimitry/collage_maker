@@ -82,7 +82,7 @@ def make_collage(images, filename, width, init_height):
 
 
 def main():
-    # prepare options parser
+    # prepare argument parser
     parse = argparse.ArgumentParser(description='Photo collage maker')
     parse.add_argument('-f', '--folder', dest='folder', help='folder with images (*.jpg, *.jpeg, *.png)', default='.')
     parse.add_argument('-o', '--output', dest='output', help='output collage image filename', default='collage.png')
