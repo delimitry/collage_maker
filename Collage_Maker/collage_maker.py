@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Collage maker - tool to create picture collages
-Author: Delimitry
+Author: Delimitry 
 """
 
 import argparse
