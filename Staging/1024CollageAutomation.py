@@ -17,6 +17,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from datetime import date
 import time
+import json
 import argparse
 import logging
 
@@ -31,17 +32,36 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(file_handler)
 
-shufle = True     # Global variable to specify if images needs to be shufled
-reduction = 0.023  # Global variable to specify thubmnail size to create pixelated image
-outputSize = 0.5     # Global variable to specify the final output size of the pixelated image
+#Reading global properties from json file
+with open('settings.json') as f: # filename needs to be specefied
+        data = json.load(f)
+        folder01   = data['folders']['01']
+        folder02   = data['folders']['02']
+        folder03   = data['folders']['03']
+        folder04   = data['folders']['04']
+        shufle     = data['collageCreation']['shufle']  # Global variable to specify if images needs to be shufled
+        reduction  = data['Pixelation']['reduction']    # Global variable to specify thubmnail size to create pixelated image
+        outputSize = data['Pixelation']['outputSize']   # Global variable to specify the final output size of the pixelated image
+        new_size   = data['ImageResize']['new_size'] # (800,800)
+        width_2x2   = data['collageCreation']['width_2x2']
+        width_4x4   = data['collageCreation']['width_4x4']
+        width_8x8   = data['collageCreation']['width_8x8']
+        width_16x16 = data['collageCreation']['width_16x16']
+        width_32x32 = data['collageCreation']['width_32x32']
+        nxn_height  = data['collageCreation']['nxn_height']
+        name_2x2  = data['collageCreation']['name_2x2']
+        name_4x4  = data['collageCreation']['name_4x4']
+        name_8x8  = data['collageCreation']['name_8x8']
+        name_16x16  = data['collageCreation']['name_16x16']
+        name_32x32  = data['collageCreation']['name_32x32']
+
 
 def standarize_scanned_image_sizes():
     '''
     This function will standarize the size of all scanned images to be 800x800
     '''
-    input_folder = '.\\Images\\01scanned\\'
-    output_folder = '.\\Images\\02tobepixelated\\'
-    new_size = (800,800)
+    input_folder = folder01
+    output_folder = folder02
     
     logger.info(f'Resizing Scanned Images to {new_size} ...')
     
@@ -127,8 +147,8 @@ def create_all_collages():
     This process will create new collage images using the images that were resized/standarized 
     and store them under the folder of images to be pixelated
     '''
-    input_folder = '.\\Images\\02tobepixelated\\'
-    output_folder = '.\\Images\\02tobepixelated\\'
+    input_folder = folder02
+    output_folder = folder02
 
     logger.info('Creating Collages....')
 
@@ -151,7 +171,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 4:
-            make_single_collage(collageNumber, collage_items, output_folder + f'1024CartoonCollage-2x2-{collageNumber}.png' , 1600, 800)
+            make_single_collage(collageNumber, collage_items, output_folder + f'{name_2x2}-{collageNumber}.png' , width_2x2, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -168,7 +188,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 16:
-            make_single_collage(collageNumber, collage_items, output_folder + f'1024CartoonCollage-4x4-{collageNumber}.png' , 3200, 800)
+            make_single_collage(collageNumber, collage_items, output_folder + f'{name_4x4}-{collageNumber}.png' , width_4x4, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -185,7 +205,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 64:
-            make_single_collage(collageNumber, collage_items, output_folder + f'1024CartoonCollage-8x8-{collageNumber}.png' , 6400, 800)
+            make_single_collage(collageNumber, collage_items, output_folder + f'{name_8x8}-{collageNumber}.png' , width_8x8, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -202,7 +222,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 256:
-            make_single_collage(collageNumber, collage_items, output_folder + f'1024CartoonCollage-16x16-{collageNumber}.png' , 12800, 800)
+            make_single_collage(collageNumber, collage_items, output_folder + f'{name_16x16}-{collageNumber}.png' , width_16x16, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -219,7 +239,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 1024:
-            make_single_collage(collageNumber, collage_items, output_folder + f'1024CartoonCollage-32x32-{collageNumber}.png' , 25600, 800)
+            make_single_collage(collageNumber, collage_items, output_folder + f'{name_32x32}-{collageNumber}.png' , width_32x32, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -250,8 +270,8 @@ def pixelate_all_images():
     '''
     This function will pixelate all images inside an specific folder and save them into a different one
     '''
-    input_folder = '.\\Images\\02tobepixelated\\'
-    output_folder = '.\\Images\\03pixelated\\'
+    input_folder = folder02
+    output_folder = folder03
     
     logger.info(f'Pixelating all images in folder: {input_folder}')
     # get images
@@ -279,9 +299,9 @@ def pixelate_all_images():
             photo2pixelart(img_path,
                         (int(w*reduction),int(h*reduction)), 
                         img_path.replace(input_folder, output_folder)
-                        .replace('.png','-pix.png')
-                        .replace('.jpg','-pix.jpg')
-                        .replace('.jpeg','-pix.jpeg'),
+                        .replace('.png','-pixelated.png')
+                        .replace('.jpg','-pixelated.jpg')
+                        .replace('.jpeg','-pixelated.jpeg'),
                         (int(w*outputSize),int(h*outputSize))
                         )
         

@@ -1,0 +1,29 @@
+{
+    "folders": {
+        "01": ".\\Images\\01scanned\\",
+        "02": ".\\Images\\02tobepixelated\\",
+        "03": ".\\Images\\03pixelated\\",
+        "04": ".\\Images\\04openseaready\\"
+    },
+    "ImageResize": {
+        "new_size": [800,800]
+    },
+    "collageCreation": {
+        "shufle": true,
+        "name_2x2": "2x2-1024CartoonCollage",
+        "width_2x2": 1600,
+        "name_4x4": "4x4-1024CartoonCollage",
+        "width_4x4": 3200,
+        "name_8x8": "8x8-1024CartoonCollage",
+        "width_8x8": 6400,
+        "name_16x16": "16x16-1024CartoonCollage",
+        "width_16x16": 12800,
+        "name_32x32": "32x32-1024CartoonCollage",
+        "width_32x32": 25600,
+        "nxn_height": 800
+    },
+    "Pixelation": {
+        "reduction": 0.023,
+        "outputSize": 0.5
+    }
+}
