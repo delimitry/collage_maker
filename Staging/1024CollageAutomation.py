@@ -35,6 +35,7 @@ logger.addHandler(file_handler)
 #Reading global properties from json file
 with open('settings.json') as f: # filename needs to be specefied
         data = json.load(f)
+        folder00   = data['folders']['00']
         folder01   = data['folders']['01']
         folder02   = data['folders']['02']
         folder03   = data['folders']['03']
@@ -43,18 +44,18 @@ with open('settings.json') as f: # filename needs to be specefied
         reduction  = data['Pixelation']['reduction']    # Global variable to specify thubmnail size to create pixelated image
         outputSize = data['Pixelation']['outputSize']   # Global variable to specify the final output size of the pixelated image
         new_size   = data['ImageResize']['new_size'] # (800,800)
-        width_2x2   = data['collageCreation']['width_2x2']
-        width_4x4   = data['collageCreation']['width_4x4']
-        width_8x8   = data['collageCreation']['width_8x8']
-        width_16x16 = data['collageCreation']['width_16x16']
-        width_32x32 = data['collageCreation']['width_32x32']
-        nxn_height  = data['collageCreation']['nxn_height']
         name_2x2  = data['collageCreation']['name_2x2']
         name_4x4  = data['collageCreation']['name_4x4']
         name_8x8  = data['collageCreation']['name_8x8']
         name_16x16  = data['collageCreation']['name_16x16']
-        name_32x32  = data['collageCreation']['name_32x32']
-
+        name_32x32  = data['collageCreation']['name_32x32']        
+        overlay_opacity  = data['overlays']['overlay_opacity']
+        overlay_1x1  = data['overlays']['overlay_1x1']
+        overlay_2x2  = data['overlays']['overlay_2x2']
+        overlay_4x4  = data['overlays']['overlay_4x4']
+        overlay_8x8  = data['overlays']['overlay_8x8']
+        overlay_16x16  = data['overlays']['overlay_16x16']
+        overlay_32x32  = data['overlays']['overlay_32x32']
 
 def standarize_scanned_image_sizes():
     '''
@@ -80,7 +81,7 @@ def standarize_scanned_image_sizes():
         img = img.resize(new_size,Image.BILINEAR)
         img.save(img_path.replace(input_folder, output_folder))
 
-def make_single_collage(collageNumber, images, filename, width, init_height):
+def make_single_collage(dimenssion, collageNumber, images, filename, width, init_height):
     """
     Make a collage image with a width equal to `width` from `images` and save to `filename`.
     """
@@ -139,7 +140,7 @@ def make_single_collage(collageNumber, images, filename, width, init_height):
                 x += img.size[0] + margin_size
             y += int(init_height / coef) + margin_size
     collage_image.save(filename)    
-    logger.info(f"    Creating Collage #{collageNumber}: {filename}")
+    logger.info(f"    Creating {dimenssion} Collage #{collageNumber}: {filename}")
     return True
 
 def create_all_collages():
@@ -149,6 +150,12 @@ def create_all_collages():
     '''
     input_folder = folder02
     output_folder = folder02
+    width_2x2 = new_size[0] * 2
+    width_4x4 = new_size[0] * 4
+    width_8x8 = new_size[0] * 8
+    width_16x16 = new_size[0] * 16
+    width_32x32 = new_size[0] * 32
+    nxn_height  = new_size[1]
 
     logger.info('Creating Collages....')
 
@@ -171,7 +178,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 4:
-            make_single_collage(collageNumber, collage_items, output_folder + f'{name_2x2}-{collageNumber}.png' , width_2x2, nxn_height)
+            make_single_collage('2x2', collageNumber, collage_items, output_folder + f'{name_2x2}-{collageNumber}.png' , width_2x2, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -188,7 +195,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 16:
-            make_single_collage(collageNumber, collage_items, output_folder + f'{name_4x4}-{collageNumber}.png' , width_4x4, nxn_height)
+            make_single_collage('4x4', collageNumber, collage_items, output_folder + f'{name_4x4}-{collageNumber}.png' , width_4x4, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -205,7 +212,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 64:
-            make_single_collage(collageNumber, collage_items, output_folder + f'{name_8x8}-{collageNumber}.png' , width_8x8, nxn_height)
+            make_single_collage('8x8', collageNumber, collage_items, output_folder + f'{name_8x8}-{collageNumber}.png' , width_8x8, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -222,7 +229,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 256:
-            make_single_collage(collageNumber, collage_items, output_folder + f'{name_16x16}-{collageNumber}.png' , width_16x16, nxn_height)
+            make_single_collage('16x16', collageNumber, collage_items, output_folder + f'{name_16x16}-{collageNumber}.png' , width_16x16, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -239,7 +246,7 @@ def create_all_collages():
     for singleImage in images:
         collage_items.append(singleImage)
         if counter == 1024:
-            make_single_collage(collageNumber, collage_items, output_folder + f'{name_32x32}-{collageNumber}.png' , width_32x32, nxn_height)
+            make_single_collage('32x32', collageNumber, collage_items, output_folder + f'{name_32x32}-{collageNumber}.png' , width_32x32, nxn_height)
             collageNumber = collageNumber + 1
             collage_items = []
             counter = 0
@@ -307,12 +314,76 @@ def pixelate_all_images():
         
             counter = counter + 1
 
-def wattermark_addition():
+def watermark_addition():
     '''
-    input_folder: 03pixelated
-    output_folder: 04openseaready
+    This function will add a watermark into each image
     '''
+    overlays_folder = folder00
+    input_folder = folder03
+    output_folder = folder04
+    singleItemSize = new_size[0] * outputSize
     logger.info('This is: wattermark_addition')
+
+    # get images
+    files = [os.path.join(input_folder, fn) for fn in os.listdir(input_folder)]
+    images = [fn for fn in files if os.path.splitext(fn)[1].lower() in ('.jpg', '.jpeg', '.png')]
+    if not images:
+        logger.error('No images found,  Please select other directory with images!')
+        exit(1)
+
+    watermark_1x1 = Image.open(overlays_folder + overlay_1x1)
+    watermark_2x2 = Image.open(overlays_folder + overlay_2x2)
+    watermark_4x4 = Image.open(overlays_folder + overlay_4x4)
+    #watermark_8x8 = Image.open(overlays_folder + overlay_8x8)
+    #watermark_16x16 = Image.open(overlays_folder + overlay_16x16)
+    #watermark_32x32 = Image.open(overlays_folder + overlay_32x32)
+
+    watermark_1x1 = watermark_1x1.convert("RGBA")
+    watermark_2x2 = watermark_2x2.convert("RGBA")
+    watermark_4x4 = watermark_4x4.convert("RGBA")
+    #watermark_8x8 = watermark_8x8.convert("RGBA")
+    #watermark_16x16 = watermark_16x16.convert("RGBA")
+    #watermark_32x32 = watermark_32x32.convert("RGBA")
+
+    count = 0
+    for img_path in images:
+        # pending to add logic to know the overlay to be used depending on the image size.
+        background = Image.open(img_path)
+        background = background.convert("RGBA")
+
+        count = count + 1
+        
+        # 1x1 Images
+        if background.size[0] == singleItemSize:
+            logger.info(f"    Adding 1x1 Watermark to image #{count}: {img_path}")
+            new_img = Image.blend(background, watermark_1x1, overlay_opacity)
+
+        # 2x2 Images
+        elif background.size[0] == singleItemSize * 2:
+            logger.info(f"    Adding 2x2 Watermark to image #{count}: {img_path}")
+            new_img = Image.blend(background, watermark_2x2, overlay_opacity)
+        
+        # 4x4 Images
+        elif background.size[0] == singleItemSize * 4:
+            logger.info(f"    Adding 4x4 Watermark to image #{count}: {img_path}")
+            new_img = Image.blend(background, watermark_4x4, overlay_opacity)
+        '''
+        # 8x8 Images
+        elif background.size[0] == singleItemSize * 8:
+            logger.info(f"    Adding 8x8 Watermark to image #{count}: {img_path}")
+            new_img = Image.blend(background, watermark_8x8, overlay_opacity)
+
+        # 16x16 Images
+        elif background.size[0] == singleItemSize * 16:
+            logger.info(f"    Adding 16x16 Watermark to image #{count}: {img_path}")
+            new_img = Image.blend(background, watermark_16x16, overlay_opacity)
+        
+        # 32x32 Images
+        elif background.size[0] == singleItemSize * 32:
+            logger.info(f"    Adding 32x32 Watermark to image #{count}: {img_path}")
+            new_img = Image.blend(background, watermark_32x32,overlay_opacity)
+        '''
+        new_img.save(img_path.replace(input_folder, output_folder),"PNG")
 
 def main():
     
@@ -320,7 +391,7 @@ def main():
     standarize_scanned_image_sizes()
     create_all_collages()
     pixelate_all_images()
-    #wattermark_addition()
+    watermark_addition()
     logger.info('El brete se completO, Cual inter?????')
     logger.info('------------------------------------')
 
