@@ -11,11 +11,11 @@
     },
     "collageCreation": {
         "shufle": true,
-        "name_2x2": "2x2-1024CartoonCollage",
-        "name_4x4": "4x4-1024CartoonCollage",
-        "name_8x8": "8x8-1024CartoonCollage",
-        "name_16x16": "16x16-1024CartoonCollage",
-        "name_32x32": "32x32-1024CartoonCollage"
+        "name_2x2": "2x2-Collage-CryptoCartoonPerceptions",
+        "name_4x4": "4x4-Collage-CryptoCartoonPerceptions",
+        "name_8x8": "8x8-Collage-CryptoCartoonPerceptions",
+        "name_16x16": "16x16-Collage-CryptoCartoonPerceptions",
+        "name_32x32": "32x32-Collage-CryptoCartoonPerceptions"
     },
     "Pixelation": {
         "reduction": 0.023,

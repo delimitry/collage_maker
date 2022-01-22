@@ -387,7 +387,7 @@ def watermark_addition():
 
 def main():
     
-    logger.info('Starting 1024Collage Automation Process...')
+    logger.info('Starting Crypto Cartoon Perceptions Automation Process...')
     standarize_scanned_image_sizes()
     create_all_collages()
     pixelate_all_images()
