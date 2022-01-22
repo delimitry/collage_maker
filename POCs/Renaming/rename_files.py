@@ -20,6 +20,7 @@ def change_name_of_files(files):
 
     count = 0
     for file_path in files:
+        count = count + 1
         new_file_name = file_path.replace(text_to_change,new_text)
         logger.info(f"    Renaming file #{count} from : {file_path} to {new_file_name}")
         os.rename(file_path, new_file_name)
