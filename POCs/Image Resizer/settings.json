@@ -1,0 +1,9 @@
+{
+    "folders": {
+        "01": ".\\Images\\01scanned\\",
+        "02": ".\\Images\\02tobepixelated\\"
+    },
+    "ImageResize": {
+        "new_size": [1240,1620]
+    }
+}
