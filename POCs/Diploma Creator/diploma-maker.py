@@ -1,42 +1,59 @@
 '''
-pip install openpyxl
+Need to install this library:  pip install openpyxl
+
+Exaple of the required config.json:
+
+{    
+    "Input": {
+        "pedirValores" : false
+    },
+    "Imagen": {
+        "nombreImagen" : "align.jpg",
+        "PorcentajeAltNombre" : 43
+    },
+    "Excel": {
+        "nombreArchivo" : "lista.xlsx",
+        "nombreHoja" : "Hoja1",
+        "nombreColumna" : "Preferred_Name"
+    },
+    "Letra": {
+        "tamanno" : 36,
+        "color": "black",
+        "tipo" : "arial.ttf",
+        "case" : "excel"
+    }
+}
 
 '''
-import argparse
-import csv
+import openpyxl
 import os
-from os import replace
 import os.path
+from os import path
+from os import replace
+from pathlib import Path
+import PIL
 from PIL import Image
 from PIL import ImageDraw
-import matplotlib.pyplot as plt
-from datetime import date
-import argparse
-from os import path 
 from PIL import ImageFont
-import openpyxl
-from pathlib import Path
-from re import sub
+import json
 
-#global program vars
-font_size = 50
-font_color= 'black'
-font_case = 'excel' # lower, upper, title, excel
-font_type = 'arial.ttf'
-
-imagePath = '' # NO MODIFICAR ESTOS VALORES
-altNombre = 0 # NO MODIFICAR ESTOS VALORES
-csvPath = '' # NO MODIFICAR ESTOS VALORES
-nombreHoja = '' # NO MODIFICAR ESTOS VALORES
-nombreCol = '' # NO MODIFICAR ESTOS VALORES
-
-def use_fixed_params():
-    global imagePath, altNombre, csvPath, nombreHoja, nombreCol
-    imagePath = 'align.jpg'      #Cambiar el valor que esta entre '' en caso se ser necesario
-    altNombre = 43              #Cambiar el valor en caso se ser necesario
-    csvPath = 'lista.xlsx'       #Cambiar el valor que esta entre '' en caso se ser necesario
-    nombreHoja = 'Hoja1'         #Cambiar el valor que esta entre '' en caso se ser necesario
-    nombreCol = 'Preferred_Name' #Cambiar el valor que esta entre '' en caso se ser necesario
+#Reading global properties from json file
+with open('config.json') as f:
+        data = json.load(f)
+        # Input
+        pedirValores = data['Input']['pedirValores']
+        # imagen
+        imagePath = data['Imagen']['nombreImagen']
+        altNombre = data['Imagen']['PorcentajeAltNombre']
+        # Excel
+        csvPath = data['Excel']['nombreArchivo']
+        nombreHoja = data['Excel']['nombreHoja']
+        nombreCol = data['Excel']['nombreColumna']
+        # Letra
+        font_size = data['Letra']['tamanno']
+        font_color= data['Letra']['color']
+        font_type = data['Letra']['tipo']
+        font_case = data['Letra']['case']
 
 def get_params_from_user():
     print('  Capturando Parametros:')
@@ -130,19 +147,23 @@ def read_names_from_file():
         
         if (font_case == 'title'):
             for row in nombres.iter_rows(2, nombres.max_row):
-                personas.append(row[index].value.title())
+                if (row[index].value != None):
+                    personas.append(row[index].value.title())
         elif (font_case == 'upper'):
             for row in nombres.iter_rows(2, nombres.max_row):
-                personas.append(row[index].value.upper())
+                if (row[index].value != None):
+                    personas.append(row[index].value.upper())
         elif (font_case == 'lower'):
             for row in nombres.iter_rows(2, nombres.max_row):
-                personas.append(row[index].value.lower())
+                if (row[index].value != None):
+                    personas.append(row[index].value.lower())
         else:
             for row in nombres.iter_rows(2, nombres.max_row):
-                personas.append(row[index].value)
+                if (row[index].value != None):
+                    personas.append(row[index].value)
 
         # si el excel tiene datos en esa columna se generan los certificados
-        if len(personas) >= 1:
+        if (len(personas) >= 1):
             count = 1
             for persona in personas:
                 add_text_to_Image(persona, count)
@@ -152,24 +173,14 @@ def read_names_from_file():
         
     else: 
         print(f'    La columna: {nombreCol} no existe en la hoja {nombreHoja} del archivo de excel.')
-    
 
     print('  Finalizando Creacion de Certificados Individuales:')
 
 def main():
-    print('Iniciando programa para crear certifiados....')
+    print('Iniciando programa para crear diplomas....')
 
-    # El simoblo # hace que las lineas en este archivo no se ejecuten.
-
-    # Para usar los parametros desde este archivo:
-        # debes quitar el # adelante de use_fixed_params() y ponerlo en read_names_from_file()
-        # para modificar los parametors debes hacerlo a partir de la linea 36 a 40
-     
-    #Para que el sistema pregunte los parametros:  
-        # debes quitar poner un # adelante de use_fixed_params() y quitarlo en read_names_from_file()
-
-    use_fixed_params()
-    #get_params_from_user()
+    if (pedirValores):
+        get_params_from_user()
 
     read_names_from_file()
     

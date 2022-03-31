@@ -1,0 +1,20 @@
+{    
+    "Input": {
+        "pedirValores" : false
+    },
+    "Imagen": {
+        "nombreImagen" : "align.jpg",
+        "PorcentajeAltNombre" : 43
+    },
+    "Excel": {
+        "nombreArchivo" : "lista.xlsx",
+        "nombreHoja" : "Hoja1",
+        "nombreColumna" : "Preferred_Name"
+    },
+    "Letra": {
+        "tamanno" : 36,
+        "color": "black",
+        "tipo" : "arial.ttf",
+        "case" : "excel"
+    }
+}
