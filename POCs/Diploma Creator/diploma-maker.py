@@ -1,11 +1,16 @@
 '''
-Need to install this library:  pip install openpyxl
+Need to install these libraries:
+pip install pillow
+pip install openpyxl
 
 Exaple of the required config.json:
 
 {    
     "Input": {
         "pedirValores" : false
+    },
+    "Output": {
+        "folderName" : "test"
     },
     "Imagen": {
         "nombreImagen" : "align.jpg",
@@ -42,6 +47,8 @@ with open('config.json') as f:
         data = json.load(f)
         # Input
         pedirValores = data['Input']['pedirValores']
+        # Output
+        outputfolderName = data['Output']['folderName']
         # imagen
         imagePath = data['Imagen']['nombreImagen']
         altNombre = data['Imagen']['PorcentajeAltNombre']
@@ -54,6 +61,11 @@ with open('config.json') as f:
         font_color= data['Letra']['color']
         font_type = data['Letra']['tipo']
         font_case = data['Letra']['case']
+
+def create_folder(current_directory ,newdir):
+    final_directory = os.path.join(current_directory, r'{}'.format(newdir))
+    if not os.path.exists(final_directory):
+        os.makedirs(final_directory)
 
 def get_params_from_user():
     print('  Capturando Parametros:')
@@ -116,7 +128,7 @@ def add_text_to_Image(personName, personNumber):
     
     #img.show()
     
-    img.save(f'./output/{personName.replace(" ","_").replace(".","").strip()}.pdf')
+    img.save(f'./{outputfolderName}/{personName.replace(" ","_").replace(".","").strip()}.pdf')
 
     img.close()
 
@@ -178,6 +190,9 @@ def read_names_from_file():
 
 def main():
     print('Iniciando programa para crear diplomas....')
+
+    #create Reports Root Folder
+    create_folder(os.getcwd(), outputfolderName)
 
     if (pedirValores):
         get_params_from_user()
