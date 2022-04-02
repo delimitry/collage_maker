@@ -3,7 +3,12 @@
         "pedirValores" : false
     },
     "Output": {
-        "folderName" : "test"
+        "folderName" : "test",
+        "generateSinglePDF" : true,
+        "pdfPageSize" : "A4",
+        "WidthMargin" : 20 ,
+        "HighMargin" : 10,
+        "porcentajeTamannoImagenEnPDF" : 100
     },
     "Imagen": {
         "nombreImagen" : "align.jpg",

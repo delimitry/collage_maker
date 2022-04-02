@@ -2,6 +2,7 @@
 Need to install these libraries:
 pip install pillow
 pip install openpyxl
+pip install fpdf
 
 Exaple of the required config.json:
 
@@ -10,7 +11,12 @@ Exaple of the required config.json:
         "pedirValores" : false
     },
     "Output": {
-        "folderName" : "test"
+        "folderName" : "test",
+        "generateSinglePDF" : true,
+        "pdfPageSize" : "A4",
+        "WidthMargin" : 20 ,
+        "HighMargin" : 10,
+        "porcentajeTamannoImagenEnPDF" : 100
     },
     "Imagen": {
         "nombreImagen" : "align.jpg",
@@ -18,7 +24,7 @@ Exaple of the required config.json:
     },
     "Excel": {
         "nombreArchivo" : "lista.xlsx",
-        "nombreHoja" : "Hoja1",
+        "nombreHoja" : "test",
         "nombreColumna" : "Preferred_Name"
     },
     "Letra": {
@@ -41,6 +47,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 import json
+from fpdf import FPDF
 
 #Reading global properties from json file
 with open('config.json') as f:
@@ -49,6 +56,11 @@ with open('config.json') as f:
         pedirValores = data['Input']['pedirValores']
         # Output
         outputfolderName = data['Output']['folderName']
+        generateSinglePDF = data['Output']['generateSinglePDF']
+        pdfPageSize = data['Output']['pdfPageSize']
+        w_margin = data['Output']['WidthMargin']
+        h_margin = data['Output']['HighMargin']
+        porcentajeTamannoImagenEnPDF = data['Output']['porcentajeTamannoImagenEnPDF']
         # imagen
         imagePath = data['Imagen']['nombreImagen']
         altNombre = data['Imagen']['PorcentajeAltNombre']
@@ -127,12 +139,23 @@ def add_text_to_Image(personName, personNumber):
     I1.text(((W-w)/2,(altNombre/100*H)), personName, font=myFont, fill = font_color)
     
     #img.show()
+
+    img_path = f'./{outputfolderName}/{personName.replace(" ","_").replace(".","").strip()}.jpg'
     
-    img.save(f'./{outputfolderName}/{personName.replace(" ","_").replace(".","").strip()}.pdf')
+    img.save(img_path)
 
     img.close()
 
     print(f'    Certificado #{personNumber} creado para: {personName}')
+
+    # return Image w and h in mm
+    dictionary ={
+        "path": img_path,
+        "w": W * 0.2645833333,
+        "h": H * 0.2645833333
+    }
+
+    return (dictionary)
 
 def read_names_from_file():
     print('  Iniciando Creacion de Certificados Individuales:')    
@@ -177,9 +200,37 @@ def read_names_from_file():
         # si el excel tiene datos en esa columna se generan los certificados
         if (len(personas) >= 1):
             count = 1
-            for persona in personas:
-                add_text_to_Image(persona, count)
-                count = count +1
+
+            if (generateSinglePDF):
+                W,H = (0,0)
+                # set pdf page size accordig with provided parameter in config.json
+                if (pdfPageSize == 'A4'):
+                    W,H = (297,210)
+                elif (pdfPageSize == 'Letter'):
+                    W,H = (270, 215)
+                elif (pdfPageSize == 'Legal'):
+                    W,H = (355, 215)
+                else: # default is A4
+                    W,H = (297,210)
+                
+                pdf = FPDF('l','mm',(H,W))
+                for persona in personas:
+                    diploma = add_text_to_Image(persona, count)
+                    count = count +1
+                    pdf.add_page()
+                    pdf.image(diploma['path'],
+                            w_margin,
+                            h_margin,
+                            diploma['w']*(porcentajeTamannoImagenEnPDF/100),
+                            diploma['h']*(porcentajeTamannoImagenEnPDF/100))
+
+                pdf.output(f'{outputfolderName}/Diplomas.pdf', "F")
+                    
+            else:
+                for persona in personas:                    
+                    add_text_to_Image(persona, count)
+                    count = count +1
+
         else:
             print(f'    No existen valores en la columna: {nombreCol} en la hoja {nombreHoja} del archivo de excel.')
         
