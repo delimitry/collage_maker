@@ -254,3 +254,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+    #https://stackoverflow.com/questions/43767328/python-fpdf-not-sizing-correctly

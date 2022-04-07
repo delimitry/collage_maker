@@ -3,7 +3,7 @@
         "pedirValores" : false
     },
     "Output": {
-        "folderName" : "2022_5_Annos",
+        "folderName" : "2021-20 ANNOS",
         "generateSinglePDF" : true,
         "pdfPageSize" : "A4",
         "WidthMargin" : 2,
@@ -11,17 +11,18 @@
         "porcentajeTamannoImagenEnPDF" : 104
     },
     "Imagen": {
-        "nombreImagen" : "align_5.jpg",
+        "nombreImagen" : "align_20.jpg",
         "PorcentajeAltNombre" : 43
     },
     "Excel": {
-        "nombreArchivo" : "Aniversarios 2022.xlsx",
-        "nombreHoja" : "5 ANNOS",
+        "nombreArchivo" : "Aniversarios 2021.xlsx",
+        "nombreHoja" : "20 ANNOS",
         "nombreColumna" : "Preferred_Name"
     },
     "Letra": {
         "tamanno" : 36,
-        "color": "black",
+        "color": "#009BC7",
+        "color-opcion2": "black",
         "tipo" : "arial.ttf",
         "case" : "excel"
     }
