@@ -3,20 +3,20 @@
         "pedirValores" : false
     },
     "Output": {
-        "folderName" : "test",
+        "folderName" : "2022_5_Annos",
         "generateSinglePDF" : true,
         "pdfPageSize" : "A4",
-        "WidthMargin" : 20 ,
-        "HighMargin" : 10,
-        "porcentajeTamannoImagenEnPDF" : 100
+        "WidthMargin" : 2,
+        "HighMargin" : 13,
+        "porcentajeTamannoImagenEnPDF" : 104
     },
     "Imagen": {
-        "nombreImagen" : "align.jpg",
+        "nombreImagen" : "align_5.jpg",
         "PorcentajeAltNombre" : 43
     },
     "Excel": {
-        "nombreArchivo" : "lista.xlsx",
-        "nombreHoja" : "Hoja1",
+        "nombreArchivo" : "Aniversarios 2022.xlsx",
+        "nombreHoja" : "5 ANNOS",
         "nombreColumna" : "Preferred_Name"
     },
     "Letra": {

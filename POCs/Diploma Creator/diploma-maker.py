@@ -224,7 +224,7 @@ def read_names_from_file():
                             diploma['w']*(porcentajeTamannoImagenEnPDF/100),
                             diploma['h']*(porcentajeTamannoImagenEnPDF/100))
 
-                pdf.output(f'{outputfolderName}/Diplomas.pdf', "F")
+                pdf.output(f'{outputfolderName}/{outputfolderName}_Diplomas.pdf', "F")
                     
             else:
                 for persona in personas:                    
