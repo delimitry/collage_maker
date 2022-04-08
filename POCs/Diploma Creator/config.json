@@ -3,16 +3,16 @@
         "pedirValores" : false
     },
     "Output": {
-        "folderName" : "2021-20 ANNOS",
+        "folderName" : "test",
         "pdf_folderName" : "PDFs",
         "generateSinglePDF" : true,
-        "pdfPageSize" : "A4",
-        "WidthMargin" : 2,
-        "HighMargin" : 13,
-        "porcentajeTamannoImagenEnPDF" : 104
+        "pdfPageSize" : "Letter",
+        "WidthMargin" : 4,
+        "HighMargin" : 6,
+        "porcentajeTamannoImagenEnPDF" : 107
     },
     "Imagen": {
-        "nombreImagen" : "cert1.jpg",
+        "nombreImagen" : "letter_align_5.JPG",
         "PorcentajeAltNombre" : 43
     },
     "Excel": {

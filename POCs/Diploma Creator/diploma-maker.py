@@ -208,7 +208,7 @@ def read_names_from_file():
                 if (pdfPageSize == 'A4'):
                     W,H = (297,210)
                 elif (pdfPageSize == 'Letter'):
-                    W,H = (270, 215)
+                    W,H = (279.4, 215.9)
                 elif (pdfPageSize == 'Legal'):
                     W,H = (355, 215)
                 else: # default is A4
