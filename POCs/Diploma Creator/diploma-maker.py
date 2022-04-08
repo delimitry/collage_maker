@@ -56,6 +56,7 @@ with open('config.json') as f:
         pedirValores = data['Input']['pedirValores']
         # Output
         outputfolderName = data['Output']['folderName']
+        pdf_outputfolderName = data['Output']['pdf_folderName']
         generateSinglePDF = data['Output']['generateSinglePDF']
         pdfPageSize = data['Output']['pdfPageSize']
         w_margin = data['Output']['WidthMargin']
@@ -224,7 +225,7 @@ def read_names_from_file():
                             diploma['w']*(porcentajeTamannoImagenEnPDF/100),
                             diploma['h']*(porcentajeTamannoImagenEnPDF/100))
 
-                pdf.output(f'{outputfolderName}/{outputfolderName}_Diplomas.pdf', "F")
+                pdf.output(f'{pdf_outputfolderName}/{outputfolderName}_Diplomas.pdf', "F")
                     
             else:
                 for persona in personas:                    
@@ -242,8 +243,11 @@ def read_names_from_file():
 def main():
     print('Iniciando programa para crear diplomas....')
 
-    #create Reports Root Folder
+    #create output Root Folder
     create_folder(os.getcwd(), outputfolderName)
+
+    #create pdf output Root Folder
+    create_folder(os.getcwd(), pdf_outputfolderName)
 
     if (pedirValores):
         get_params_from_user()

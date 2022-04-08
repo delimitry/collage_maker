@@ -4,6 +4,7 @@
     },
     "Output": {
         "folderName" : "2021-20 ANNOS",
+        "pdf_folderName" : "PDFs",
         "generateSinglePDF" : true,
         "pdfPageSize" : "A4",
         "WidthMargin" : 2,
@@ -11,12 +12,12 @@
         "porcentajeTamannoImagenEnPDF" : 104
     },
     "Imagen": {
-        "nombreImagen" : "align_20.jpg",
+        "nombreImagen" : "cert1.jpg",
         "PorcentajeAltNombre" : 43
     },
     "Excel": {
-        "nombreArchivo" : "Aniversarios 2021.xlsx",
-        "nombreHoja" : "20 ANNOS",
+        "nombreArchivo" : "lista.xlsx",
+        "nombreHoja" : "test",
         "nombreColumna" : "Preferred_Name"
     },
     "Letra": {
