@@ -4,34 +4,48 @@ pip install pillow
 pip install openpyxl
 pip install fpdf
 
-Este scirpt genera diplomas de una lista de nombres especifa, La imagen a utilizar es la misma para todos. 
+Este script lee un excel que tiene 2 columnas clave: Nombre Persona y tipo de certificado
+Genera un pdf conteniendo todos los nombres del excel y generando un fondo (imagen) especifico para cada uno
+basado en la columna tipos y su  valor. 
 
 Exaple of the required config.json:
 
 {    
-    "Input": {
-        "pedirValores" : false
-    },
+
     "Output": {
         "folderName" : "test",
+        "pdf_folderName" : "PDFs",
         "generateSinglePDF" : true,
-        "pdfPageSize" : "A4",
-        "WidthMargin" : 20 ,
-        "HighMargin" : 10,
-        "porcentajeTamannoImagenEnPDF" : 100
+        "pdfPageSize" : "Letter",
+        "WidthMargin" : 4,
+        "HighMargin" : 6,
+        "porcentajeTamannoImagenEnPDF" : 107
     },
     "Imagen": {
-        "nombreImagen" : "align.jpg",
         "PorcentajeAltNombre" : 43
     },
     "Excel": {
         "nombreArchivo" : "lista.xlsx",
-        "nombreHoja" : "test",
-        "nombreColumna" : "Preferred_Name"
+        "nombreHoja" : "testbigmama",
+        "nombreColumna" : "Preferred_Name",
+        "tiposColumna" : "Time",
+        
+        "imageType1_value" : "5 ANNOS",
+        "imageType1_path" : "./letter/letter_align_5.JPG",
+        
+        "imageType2_value" : "10 ANNOS",
+        "imageType2_path" : "./letter/letter_align_10.JPG",
+                
+        "imageType3_value" : "15 ANNOS",
+        "imageType3_path" : "./letter/letter_align_15.JPG",
+        
+        "imageType4_value" : "20 ANNOS",
+        "imageType4_path" : "./letter/letter_align_20.JPG"
     },
     "Letra": {
         "tamanno" : 36,
-        "color": "black",
+        "color": "#009BC7",
+        "color-opcion2": "black",
         "tipo" : "arial.ttf",
         "case" : "excel"
     }
@@ -52,10 +66,8 @@ import json
 from fpdf import FPDF
 
 #Reading global properties from json file
-with open('diploma-maker-config.json') as f:
+with open('specific-diploma-maker-config.json') as f:
         data = json.load(f)
-        # Input
-        pedirValores = data['Input']['pedirValores']
         # Output
         outputfolderName = data['Output']['folderName']
         pdf_outputfolderName = data['Output']['pdf_folderName']
@@ -65,12 +77,29 @@ with open('diploma-maker-config.json') as f:
         h_margin = data['Output']['HighMargin']
         porcentajeTamannoImagenEnPDF = data['Output']['porcentajeTamannoImagenEnPDF']
         # imagen
-        imagePath = data['Imagen']['nombreImagen']
         altNombre = data['Imagen']['PorcentajeAltNombre']
         # Excel
         csvPath = data['Excel']['nombreArchivo']
         nombreHoja = data['Excel']['nombreHoja']
         nombreCol = data['Excel']['nombreColumna']
+        tiposCol = data['Excel']['tiposColumna']
+        # Type 1 of picture 5 years
+        imageType1_enabled = data['Excel']['imageType1_enabled']
+        imageType1_value  = data['Excel']['imageType1_value']
+        imageType1_path  = data['Excel']['imageType1_path']
+        # Type 2 of picture 10 years
+        imageType2_enabled = data['Excel']['imageType2_enabled']
+        imageType2_value  = data['Excel']['imageType2_value']
+        imageType2_path  = data['Excel']['imageType2_path']
+        # Type 3 of picture 15 years
+        imageType3_enabled = data['Excel']['imageType3_enabled']
+        imageType3_value  = data['Excel']['imageType3_value']
+        imageType3_path  = data['Excel']['imageType3_path']
+        # Type 3 of picture 20 years
+        imageType4_enabled = data['Excel']['imageType4_enabled']
+        imageType4_value  = data['Excel']['imageType4_value']
+        imageType4_path  = data['Excel']['imageType4_path']
+
         # Letra
         font_size = data['Letra']['tamanno']
         font_color= data['Letra']['color']
@@ -82,47 +111,7 @@ def create_folder(current_directory ,newdir):
     if not os.path.exists(final_directory):
         os.makedirs(final_directory)
 
-def get_params_from_user():
-    print('  Capturando Parametros:')
-    okflag = True
-
-    while(okflag):
-        global imagePath
-        imagePath = input('    Cual es el nombre de la imagen para el diploma: ')
-        if (path.exists(imagePath)):
-            okflag = False
-        else:
-            print(f'      La imagen {imagePath} no existe')        
-    
-    okflag = True
-
-    while(okflag):
-        global altNombre
-        altNombre = int(input('    Cual es el porcentaje de la altura (de arriba hacia abajo) a la que hay que colocar el nombre: '))
-        if (altNombre>0 and altNombre<101):
-            okflag = False
-        else:
-            print(f'      La altura debe ser entre 1 y 100')
-    
-    okflag = True
-    
-    while(okflag):
-        global csvPath
-        csvPath = input('    Cual es el nombre del csv con la lista de personas: ')
-        if (path.exists(csvPath)):
-            okflag = False
-        else:
-            print(f'     El archivo:  {csvPath} no existe')
-
-    global nombreHoja
-    nombreHoja = input('    Cual es el nombre de la hoja en el excel en donde estan los datos?: ')
-
-    global nombreCol
-    nombreCol = input('    Cual es el nombre de la columna donde estan los nombres en la hoja de excel: ')
-
-    print('  Finalizando Captura de Parametros:')
-
-def add_text_to_Image(personName, personNumber):
+def add_text_to_Image(imagePath, personName, personNumber):
 
     #open image
     img = Image.open(imagePath)
@@ -160,52 +149,100 @@ def add_text_to_Image(personName, personNumber):
 
     return (dictionary)
 
+def transform_time_to_picture (time):
+    ''' This function will map the cell value with the image path
+        e.g 5 ANNOS with ./letter/letter_align_5.JPG
+    '''
+    picture = ""
+    if (time == imageType1_value):
+        picture = imageType1_path
+
+    elif (time == imageType2_value):
+        picture = imageType2_path
+
+    elif (time == imageType3_value):
+        picture = imageType3_path
+
+    elif (time == imageType4_value):
+        picture = imageType4_path
+
+    return picture
+
 def read_names_from_file():
     print('  Iniciando Creacion de Certificados Individuales:')    
     
+    # lista de nombre de personas leidas del excel
     personas = []
+    
+    # lista de tipos de imagenes leidas del excel ( 5, 10, 15 etc)
+    imageTypes = []
 
     xlsx_file = Path(csvPath)
     wb_obj = openpyxl.load_workbook(xlsx_file)
     nombres = wb_obj[nombreHoja]
 
     # Determinar # columna donde esta el titulo especificado
-    index = 0
+    indexnombre = 0 # # columna de los nombres
+    indextipo = 0 # # columna de los tipo de imagenes
     columnFound = False 
-    #Recorre todas las columnas de la fila 1 y compara el header
+
+    #Recorre todas las columnas de la fila 1 y compara el header (buscar columna nombre)
     for column in nombres.iter_cols(1, nombres.max_column):
         if (column[0].value ==nombreCol):
             columnFound = True
             break
-        index = index +1
+        indexnombre = indexnombre +1
+
+    #Recorre todas las columnas de la fila 1 y compara el header (buscar columna annos)
+    for column in nombres.iter_cols(1, nombres.max_column):
+        if (column[0].value ==tiposCol):
+            columnFound = True
+            break
+        indextipo = indextipo +1
 
     if (columnFound):
         # identificar el tipo de case en la letra que se va a usar (minuscula, mayuscula, titulo, la que tiene el exel)
         # Luego, recorre todas las filas de la columna que tiene el header especifico y guarda sus valores en un directorio
         
+        # Cambia el font poniendo la primera letra de todas las palabras en mayuscula de lo que se lea en la celda
         if (font_case == 'title'):
             for row in nombres.iter_rows(2, nombres.max_row):
-                if (row[index].value != None):
-                    personas.append(row[index].value.title())
+                if (row[indexnombre].value != None):
+                    personas.append(row[indexnombre].value.title())
+                    picture_path = transform_time_to_picture(row[indextipo].value)
+                    imageTypes.append(picture_path)
+
+        # Cambia el font a mayuscula de lo que se lea en la celda            
         elif (font_case == 'upper'):
             for row in nombres.iter_rows(2, nombres.max_row):
-                if (row[index].value != None):
-                    personas.append(row[index].value.upper())
+                if (row[indexnombre].value != None):
+                    personas.append(row[indexnombre].value.upper())
+                    picture_path = transform_time_to_picture(row[indextipo].value)
+                    imageTypes.append(picture_path)
+       # Cambia el font a minuscula de lo que se lea en la celda                         
         elif (font_case == 'lower'):
             for row in nombres.iter_rows(2, nombres.max_row):
-                if (row[index].value != None):
-                    personas.append(row[index].value.lower())
+                if (row[indexnombre].value != None):
+                    personas.append(row[indexnombre].value.lower())
+                    picture_path = transform_time_to_picture(row[indextipo].value)
+                    imageTypes.append(picture_path)
+        
+        # no Cambia el font de la celda
         else:
             for row in nombres.iter_rows(2, nombres.max_row):
-                if (row[index].value != None):
-                    personas.append(row[index].value)
+                if (row[indexnombre].value != None):
+                    personas.append(row[indexnombre].value)
+                    picture_path = transform_time_to_picture(row[indextipo].value)
+                    imageTypes.append(picture_path)
 
         # si el excel tiene datos en esa columna se generan los certificados
         if (len(personas) >= 1):
             count = 1
 
+            # si hay que generar un PDF.. entonces: 
             if (generateSinglePDF):
                 W,H = (0,0)
+
                 # set pdf page size accordig with provided parameter in config.json
                 if (pdfPageSize == 'A4'):
                     W,H = (297,210)
@@ -217,8 +254,9 @@ def read_names_from_file():
                     W,H = (297,210)
                 
                 pdf = FPDF('l','mm',(H,W))
+                count2 = 0
                 for persona in personas:
-                    diploma = add_text_to_Image(persona, count)
+                    diploma = add_text_to_Image(imageTypes[count2], persona, count)
                     count = count +1
                     pdf.add_page()
                     pdf.image(diploma['path'],
@@ -226,6 +264,7 @@ def read_names_from_file():
                             h_margin,
                             diploma['w']*(porcentajeTamannoImagenEnPDF/100),
                             diploma['h']*(porcentajeTamannoImagenEnPDF/100))
+                    count2 = count2 + 1
 
                 pdf.output(f'{pdf_outputfolderName}/{outputfolderName}_Diplomas.pdf', "F")
                     
@@ -245,88 +284,14 @@ def read_names_from_file():
 def main():
     print('Iniciando programa para crear diplomas....')
 
-    global outputfolderName, imagePath,csvPath, nombreHoja
-
     #create output Root Folder
     create_folder(os.getcwd(), outputfolderName)
 
     #create pdf output Root Folder
     create_folder(os.getcwd(), pdf_outputfolderName)
 
-    if (pedirValores):
-        get_params_from_user()
-
-    read_names_from_file()
-
-    '''
-    ## Hardcoded Execution
-
-    ## 2021 5 Annos
-    outputfolderName = "2021_5"
-    imagePath = "letter_align_5.JPG"
-    csvPath = "Aniversarios 2021.xlsx"
-    nombreHoja= "5 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
     read_names_from_file()
     
-    ## 2021 10 Annos
-    outputfolderName = "2021_10"
-    imagePath = "letter_align_10.JPG"
-    csvPath = "Aniversarios 2021.xlsx"
-    nombreHoja= "10 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
-    read_names_from_file()
-
-    ## 2021 15 Annos
-    outputfolderName = "2021_15"
-    imagePath = "letter_align_15.JPG"
-    csvPath = "Aniversarios 2021.xlsx"
-    nombreHoja= "15 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
-    read_names_from_file()
-
-    ## 2021 20 Annos
-    outputfolderName = "2021_20"
-    imagePath = "letter_align_20.JPG"
-    csvPath = "Aniversarios 2021.xlsx"
-    nombreHoja= "20 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
-    read_names_from_file()
-
-    ## 2022 5 Annos
-    outputfolderName = "2022_5"
-    imagePath = "letter_align_5.JPG"
-    csvPath = "Aniversarios 2022.xlsx"
-    nombreHoja= "5 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
-    read_names_from_file()
-    
-    ## 2022 10 Annos
-    outputfolderName = "2022_10"
-    imagePath = "letter_align_10.JPG"
-    csvPath = "Aniversarios 2022.xlsx"
-    nombreHoja= "10 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
-    read_names_from_file()
-
-    ## 2022 15 Annos
-    outputfolderName = "2022_15"
-    imagePath = "letter_align_15.JPG"
-    csvPath = "Aniversarios 2022.xlsx"
-    nombreHoja= "15 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
-    read_names_from_file()
-
-    ## 2021 20 Annos
-    outputfolderName = "2022_20"
-    imagePath = "letter_align_20.JPG"
-    csvPath = "Aniversarios 2022.xlsx"
-    nombreHoja= "20 ANNOS"
-    create_folder(os.getcwd(), outputfolderName)
-    read_names_from_file()
-
-    ##
-    '''
     
     print('--------------fin----------------------')
 

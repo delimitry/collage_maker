@@ -1,0 +1,40 @@
+{    
+
+    "Output": {
+        "folderName" : "test",
+        "pdf_folderName" : "PDFs",
+        "generateSinglePDF" : true,
+        "pdfPageSize" : "Letter",
+        "WidthMargin" : 4,
+        "HighMargin" : 6,
+        "porcentajeTamannoImagenEnPDF" : 107
+    },
+    "Imagen": {
+        "PorcentajeAltNombre" : 43
+    },
+    "Excel": {
+        "nombreArchivo" : "lista.xlsx",
+        "nombreHoja" : "testbigmama",
+        "nombreColumna" : "Preferred_Name",
+        "tiposColumna" : "Time",
+        
+        "imageType1_value" : "5 ANNOS",
+        "imageType1_path" : "./letter/letter_align_5.JPG",
+        
+        "imageType2_value" : "10 ANNOS",
+        "imageType2_path" : "./letter/letter_align_10.JPG",
+                
+        "imageType3_value" : "15 ANNOS",
+        "imageType3_path" : "./letter/letter_align_15.JPG",
+        
+        "imageType4_value" : "20 ANNOS",
+        "imageType4_path" : "./letter/letter_align_20.JPG"
+    },
+    "Letra": {
+        "tamanno" : 36,
+        "color": "#009BC7",
+        "color-opcion2": "black",
+        "tipo" : "arial.ttf",
+        "case" : "excel"
+    }
+}
