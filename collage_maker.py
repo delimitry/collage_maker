@@ -70,9 +70,9 @@ def make_collage(images, filename, width, init_height):
                 # if need to enlarge an image - use `resize`, otherwise use `thumbnail`, it's faster
                 k = (init_height / coef) / img.size[1]
                 if k > 1:
-                    img = img.resize((int(img.size[0] * k), int(img.size[1] * k)), Image.ANTIALIAS)
+                    img = img.resize((int(img.size[0] * k), int(img.size[1] * k)), Image.LANCZOS)
                 else:
-                    img.thumbnail((int(width / coef), int(init_height / coef)), Image.ANTIALIAS)
+                    img.thumbnail((int(width / coef), int(init_height / coef)), Image.LANCZOS)
                 if collage_image:
                     collage_image.paste(img, (int(x), int(y)))
                 x += img.size[0] + margin_size
